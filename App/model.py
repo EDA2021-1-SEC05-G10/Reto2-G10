@@ -38,6 +38,11 @@ los mismos.
 """
 
 # Construccion de modelos
+def new_catalog():
+    catalog = {'Obras': None}
+    catalog['Obras'] = mp.newMap(10000,
+                                   maptype='CHAINING',
+                                   loadfactor=4.0)
 
 # Funciones para agregar informacion al catalogo
 
