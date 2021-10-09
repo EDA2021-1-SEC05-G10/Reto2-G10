@@ -41,7 +41,17 @@ def loadDataArtists(catalog):
     input_file = csv.DictReader(open(artistsfile, encoding='utf-8'))
     for artist in input_file:
         model.add_years(artist, catalog)
+        model.add_artists(artist, catalog)
+        model.add_artists_Name(artist, catalog)
 
+def loadDataArtworks(catalog):
+    artworksfile = cf.data_dir + "Moma/Artworks-utf8-small.csv"
+    input_file = csv.DictReader(open(artworksfile, encoding='utf-8'))
+    for artwork in input_file:
+        model.add_adquiyears(artwork, catalog)
+        model.add_artworks(artwork, catalog)
+        model.add_artworks_id(artwork, catalog)
+        model.add_nacionality(artwork, catalog)
 
 
 # Funciones para la carga de datos
@@ -53,3 +63,21 @@ def loadDataArtists(catalog):
 def requerimiento1(catalog, fecha_inicial, fecha_final):
 
     return model.requerimiento1(catalog, fecha_inicial, fecha_final)
+
+def requerimiento2(catalog, fecha_inicial, fecha_final):
+
+    return model.requerimiento2(catalog, fecha_inicial, fecha_final)
+
+def requerimiento3(catalog, Artist):
+    return model.requerimiento3(catalog, Artist)
+
+def requerimiento4(catalog):
+    return model.requerimiento4(catalog)
+
+def obtenerartista(catalog, llaves):
+
+    return model.obteneratista(catalog, llaves)
+
+def obtenerobras(catalog, llaves):
+
+    return model.obtenerobra(catalog, llaves)
