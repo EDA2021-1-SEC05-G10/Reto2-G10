@@ -186,17 +186,22 @@ def requerimiento4(catalog):
         elemento= it.next(iterator1)
         info= mp.get(catalog['Nationality'],elemento)
         if lt.size(lista) == 0:
-            lt.addLast(lista, info)
+            lt.insertElement(lista, info,1)
         else:
-            i=0
-            j=lt.size(lista)+1
-            while i < j:
-                if lt.size((lt.getElement(lista, i))['value']) < lt.size(info['value']):
-                    lt.insertElement(lista, (lt.getElement(lista, i)), i+1)
-                    lt.insertElement(lista,info,i)
+            i=1
+            j=lt.size(lista)
+            while i <= j:
+                tamaño_actual = lt.size((lt.getElement(lista, i))['value'])
+                tamaño_nuevo = lt.size(info['value'])
+                if  tamaño_actual < tamaño_nuevo :
+                    elemento_actual =lt.getElement(lista, i)
+                    elemento_nuevo=info
+                    lt.deleteElement(lista,i)
+                    lt.insertElement(lista,elemento_nuevo,i)
+                    lt.insertElement(lista,elemento_actual,i+1)
                     break
                 elif i == lt.size(lista):
-                    lt.insertElement(lista,info,i)
+                    lt.insertElement(lista,info,i+1)
                                         
                 i += 1
     return lista

@@ -121,11 +121,33 @@ def requerimiento3(catalog,Artist):
         x += 1
 
 def requerimiento4(catalog):
-    reque4= controller.requerimiento4(catalog)
-    for i in range(0,9):
+    reque4 = controller.requerimiento4(catalog)
+    for i in range(1,10):
         elemento=lt.getElement(reque4,i)
-        size= lt.size(elemento['value'])
-        print('El pais: ' + elemento['key'] + ' con: ' + str(size))
+        size = lt.size(elemento['value'])
+        if elemento['key']=='':
+            print('El pais: artistas de nacionalidad desconocida con: ' + str(size))
+        else:
+            print('El pais: ' + elemento['key'] + ' con: ' + str(size))
+    peliculas= lt.getElement(reque4,1)['value']
+    i=0
+    j=lt.size(peliculas)-3
+    x=0
+    iterator1= it.newIterator(peliculas)
+    while it.hasNext(iterator1) and i < 3:
+        elemento= it.next(iterator1)
+        print(" Titulo: " + (elemento['Title']) 
+        + " Arstista(s): " + obtenerArtistas(catalog, elemento['ConstituentID']) + "\n Fecha: " + str(elemento['Date']) 
+        + " Medio: " +str(elemento['Medium']) + "\n Dimensiones: " +str(elemento['Dimensions']))
+        i += 1
+    iterator2= it.newIterator(peliculas)
+    while it.hasNext(iterator2) and x < lt.size(peliculas):
+        elemento=it.next(iterator2)
+        if x >= j:
+            print(" Titulo: " + (elemento['Title']) 
+            + " Arstista(s): " + obtenerArtistas(catalog, elemento['ConstituentID']) + "\n Fecha: " + str(elemento['Date']) 
+            + " Medio: " +str(elemento['Medium']) + "\n Dimensiones: " +str(elemento['Dimensions']))
+        x += 1
 
 
 def obtenerArtistas(catalog, idartists):
