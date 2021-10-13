@@ -81,3 +81,6 @@ def obtenerartista(catalog, llaves):
 def obtenerobras(catalog, llaves):
 
     return model.obtenerobra(catalog, llaves)
+
+def labo6(catalog, nacionalidad):
+    return model.lab6(catalog, nacionalidad)

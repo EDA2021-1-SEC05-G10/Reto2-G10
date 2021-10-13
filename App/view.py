@@ -29,6 +29,7 @@ import controller
 from DISClib.ADT import list as lt
 from DISClib.DataStructures import linkedlistiterator as it
 assert cf
+import time 
 
 
 """
@@ -45,6 +46,7 @@ def printMenu():
     print("3- Requerimiento 2")
     print("4- Requerimiento 3")
     print("5- Requerimiento 4")
+    print("8- Laboratorio 6")
     print("0- Salir")
 
 catalog = None
@@ -190,7 +192,13 @@ while True:
         requerimiento3(catalog, input("Ingresar Nombre del Artista: "))
     elif int(inputs[0]) == 5:
         requerimiento4(catalog)
-    
+    elif int(inputs[0]) == 8:
+        nac = input("nacionalidad: ")
+        start_time = time.process_time()
+        print(controller.labo6(catalog, nac))
+        stop_time = time.process_time()
+        tiempo = (stop_time-start_time)*1000
+        print(tiempo)
 
     else:
         sys.exit(0)

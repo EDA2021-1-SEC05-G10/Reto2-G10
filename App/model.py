@@ -33,6 +33,7 @@ from DISClib.ADT import map as mp
 from DISClib.DataStructures import mapentry as me
 from DISClib.Algorithms.Sorting import shellsort as sa
 import DISClib.DataStructures.linkedlistiterator as it
+from prettytable import PrettyTable
 
 assert cf
 
@@ -50,7 +51,7 @@ def newCatalog():
     catalog['artworks']=mp.newMap(2000, 4021,'CHAINING', 0.5, comparar)
     catalog['artists_name']=mp.newMap(2000, 4021,'CHAINING', 0.5, comparar)
     catalog['artworks_id']=mp.newMap(2000, 4021,'CHAINING', 0.5, comparar)
-    catalog['Nationality']=mp.newMap(200, 421,'CHAINING', 0.5, comparar)
+    catalog['Nationality']=mp.newMap(200, 421,'CHAINING',  0.5, comparar)
     
     
 
@@ -218,6 +219,21 @@ def obtenerobras(catalog, idobras):
         return info['value']
 
 
+
+def lab6 (catalog, nacionalidad):
+    naci = mp.get(catalog["Nationality"], nacionalidad)
+    naci = me.getValue(naci)
+    iterator1= it.newIterator(naci)
+    cuenta = 1
+    tabla = PrettyTable()
+    tabla.field_names = ["numero", "Id objeto", "Titulo", "Medio", "Fecha"]  
+    tabla._max_width={"numero":8,"Id objeto":15,"Titulo":20,"Medio":20 , "Fecha":17} 
+    while it.hasNext(iterator1):
+        elemento = it.next(iterator1)
+        datos = [str(cuenta),elemento["ObjectID"],elemento["Title"], elemento["Medium"], elemento["Date"]]
+        tabla.add_row(datos)
+        cuenta += 1
+    print(tabla)
 
 # Funciones utilizadas para comparar elementos dentro de una lista
 
