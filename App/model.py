@@ -53,8 +53,6 @@ def newCatalog():
     catalog['artworks_id']=mp.newMap(2000, 4021,'CHAINING', 0.5, comparar)
     catalog['Nationality']=mp.newMap(200, 421,'CHAINING',  0.5, comparar)
     
-    
-
     return catalog
 
 
@@ -118,6 +116,8 @@ def add_nacionality(infoartworks, catalog):
             lt.addLast(info1['value'], infoartworks)
 
 
+    
+
 # Funciones de consulta
 def requerimiento1(catalog, fecha_inicial, fecha_final):
     llaves= mp.keySet(catalog['years'])
@@ -131,8 +131,7 @@ def requerimiento1(catalog, fecha_inicial, fecha_final):
             while it.hasNext(iterator2):
                 element = it.next(iterator2)
                 lt.addLast(lista, element)
-        
-    
+    sa.sort(lista, compareBegin)
     return lista
 
 def requerimiento2(catalog, fecha_inicial, fecha_final):
@@ -207,7 +206,15 @@ def requerimiento4(catalog):
                 i += 1
     return lista
 
+def requerimiento5(catalog, departamento):
+    x = 0
+    return x
 
+def requerimiento6(catalog,cant,fechaInicio,fechaFinal):
+    x = 0
+    return x
+    
+    
 def obteneratista(catalog, idartists):
     info= mp.get(catalog['artists'], idartists)
     if info is not None:
@@ -236,6 +243,8 @@ def lab6 (catalog, nacionalidad):
     print(tabla)
 
 # Funciones utilizadas para comparar elementos dentro de una lista
+def compareBegin(autor1,autor2):
+    return (autor1['BeginDate'] < autor2['BeginDate'])
 
 # Funciones de ordenamiento
 def comparar(Fecha1, Fecha2 ):
