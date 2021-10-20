@@ -45,6 +45,7 @@ def printMenu():
     print("3- Requerimiento 2")
     print("4- Requerimiento 3")
     print("5- Requerimiento 4")
+    print("6- Requerimiento 5")
     print("0- Salir")
 
 catalog = None
@@ -149,6 +150,39 @@ def requerimiento4(catalog):
             + " Medio: " +str(elemento['Medium']) + "\n Dimensiones: " +str(elemento['Dimensions']))
         x += 1
 
+def requerimiento5(catalog, Department):
+    reque5= controller.requerimiento5(catalog, Department)
+    lista_antiguos= reque5[0]
+    lista_costosos= reque5[1]
+    valor=reque5[2]
+    peso= reque5[3]
+    total_obras= reque5[4]
+    print('Total de obras para transportar es: '+str(total_obras))
+    print('El valor total para transportar es: '+str(valor))
+    print('El peso total para transportar es: '+str(peso))
+    for i in range(1,5):
+        elemento= lt.getElement(lista_antiguos,i)
+        valor2=0.00
+        if elemento['Weight (kg)'] == '':
+            valor2= 48.00
+        else:
+            valor2= float(elemento['Weight (kg)']) *72.00
+        print(" Titulo: " + (elemento['Title']) 
+            + " Arstista(s): " + obtenerArtistas(catalog, elemento['ConstituentID'])+" Clasificacion: "+str(elemento['Classification']) + "\n Fecha: " + str(elemento['Date']) 
+            + " Medio: " +str(elemento['Medium']) + "\n Dimensiones: " +str(elemento['Dimensions'])+ " Costo de Transporte: "+str(valor2)+ "\n") 
+    
+    for i in range(1,5):
+        elemento= lt.getElement(lista_costosos,i)
+        valor2=0.00
+        if elemento['Weight (kg)'] == '':
+            valor2= 48.00
+        else:
+            valor2= float(elemento['Weight (kg)']) *72.00
+        print(" Titulo: " + (elemento['Title']) 
+            + " Arstista(s): " + obtenerArtistas(catalog, elemento['ConstituentID'])+" Clasificacion: "+str(elemento['Classification']) + "\n Fecha: " + str(elemento['Date']) 
+            + " Medio: " +str(elemento['Medium']) + "\n Dimensiones: " +str(elemento['Dimensions'])+ " Costo de Transporte: "+str(valor2) + "\n")
+
+
 
 def obtenerArtistas(catalog, idartists):
     idartist= idartists[1: len(idartists)-1]
@@ -190,6 +224,8 @@ while True:
         requerimiento3(catalog, input("Ingresar Nombre del Artista: "))
     elif int(inputs[0]) == 5:
         requerimiento4(catalog)
+    elif int(inputs[0]) == 6:
+        requerimiento5(catalog, input("Ingresar Departamento: "))
     
 
     else:

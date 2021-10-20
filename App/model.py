@@ -43,7 +43,7 @@ los mismos.
 
 # Construccion de modelos
 def newCatalog():
-    catalog= {'years': None, 'adquiyears': None, 'artists': None, 'artworks': None, 'artists_name': None,'artworks_id':None, 'Nationality':None}
+    catalog= {'years': None, 'adquiyears': None, 'artists': None, 'artworks': None, 'artists_name': None,'artworks_id':None, 'Nationality':None, 'Department': None}
     catalog['years']= mp.newMap(2000, 4021, 'CHAINING', 0.5, comparar)
     catalog['adquiyears']=mp.newMap(1700, 3421, 'CHAINING',0.5, comparar)
     catalog['artists']=mp.newMap(2000, 4021, 'CHAINING', 0.5,comparar)
@@ -51,6 +51,7 @@ def newCatalog():
     catalog['artists_name']=mp.newMap(2000, 4021,'CHAINING', 0.5, comparar)
     catalog['artworks_id']=mp.newMap(2000, 4021,'CHAINING', 0.5, comparar)
     catalog['Nationality']=mp.newMap(200, 421,'CHAINING', 0.5, comparar)
+    catalog['Department']=mp.newMap(2000, 421,'CHAINING', 0.5, comparar )
     
     
 
@@ -115,6 +116,16 @@ def add_nacionality(infoartworks, catalog):
             mp.put(catalog['Nationality'], info, Artwork)
         else:
             lt.addLast(info1['value'], infoartworks)
+
+def add_department(artwork,catalog):
+    infodepartment= artwork['Department']
+    info= mp.get(catalog['Department'],infodepartment)
+    if info is None:
+        lista= lt.newList('SINGLE_LINKED')
+        lt.addLast(lista, artwork )
+        mp.put(catalog['Department'],infodepartment,lista)
+    else:
+        lt.addLast(info['value'], artwork )
 
 
 # Funciones de consulta
@@ -205,7 +216,60 @@ def requerimiento4(catalog):
                                         
                 i += 1
     return lista
+def requerimiento5(catalog, Department):
+    obrasantiguas=lt.newList('SINGLE_LINKED')
+    obrascostosas=lt.newList('SINGLE_LINKED')
+    obras= mp.get(catalog['Department'], Department)['value']
+    valor= 0.00
+    peso= 0.00
+    iterator1= it.newIterator(obras)
+    while it.hasNext(iterator1):
+        elemento= it.next(iterator1)
+        if lt.size(obrasantiguas) != 0 and lt.size(obrascostosas) != 0:
+            i=1
+            j=lt.size(obrasantiguas)
+            h=1
+            k=lt.size(obrascostosas)
+            while i <= j:
+                fechai= lt.getElement(obrasantiguas, i)['Date']
+                
+                if elemento['Date'] < fechai:
+                    viejo= lt.getElement(obrasantiguas, i)
+                    lt.deleteElement(obrasantiguas, i)
+                    lt.insertElement(obrasantiguas, elemento, i)
+                    lt.insertElement(obrasantiguas,viejo,i+1)
+                    break
+                elif i == j:
+                    lt.insertElement(obrasantiguas, elemento,i+1)
+                i+=1
+            while  h <= k:
+                costoi= lt.getElement(obrascostosas, h)['Weight (kg)']
+                if elemento['Weight (kg)'] > costoi:
+                    maspesado= lt.getElement(obrascostosas, h)
+                    lt.deleteElement(obrascostosas, h)
+                    lt.insertElement(obrascostosas, elemento, h)
+                    lt.insertElement(obrascostosas,maspesado,h+1)
+                    break
+                elif h == k:
+                    lt.insertElement(obrascostosas, elemento,h+1)
+                h+=1
+        else:
+            lt.addLast(obrasantiguas, elemento)
+            lt.addLast(obrascostosas, elemento)
 
+        if elemento['Weight (kg)'] == '':
+            valor += 48.00
+            peso += 0.20
+        else:
+            peso2= float(elemento['Weight (kg)'])
+            valor2= peso2 * 72.00
+            valor += valor2
+            peso += peso2
+
+    return [obrasantiguas, obrascostosas, valor, peso, lt.size(obras)]
+
+
+    
 
 def obteneratista(catalog, idartists):
     info= mp.get(catalog['artists'], idartists)

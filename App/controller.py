@@ -52,6 +52,7 @@ def loadDataArtworks(catalog):
         model.add_artworks(artwork, catalog)
         model.add_artworks_id(artwork, catalog)
         model.add_nacionality(artwork, catalog)
+        model.add_department(artwork, catalog)
 
 
 # Funciones para la carga de datos
@@ -74,10 +75,14 @@ def requerimiento3(catalog, Artist):
 def requerimiento4(catalog):
     return model.requerimiento4(catalog)
 
+def requerimiento5(catalog, Department):
+    return model.requerimiento5(catalog, Department)
+
 def obtenerartista(catalog, llaves):
 
     return model.obteneratista(catalog, llaves)
 
 def obtenerobras(catalog, llaves):
 
-    return model.obtenerobra(catalog, llaves)
+    return model.obtenerobras(catalog, llaves)
+
