@@ -55,6 +55,7 @@ def loadDataArtworks(catalog):
         model.add_department(artwork, catalog)
 
 
+
 # Funciones para la carga de datos
 
 
@@ -85,4 +86,6 @@ def obtenerartista(catalog, llaves):
 def obtenerobras(catalog, llaves):
 
     return model.obtenerobras(catalog, llaves)
+
+
 

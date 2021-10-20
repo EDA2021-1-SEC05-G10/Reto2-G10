@@ -29,7 +29,8 @@ import controller
 from DISClib.ADT import list as lt
 from DISClib.DataStructures import linkedlistiterator as it
 assert cf
-
+import time 
+from prettytable import PrettyTable
 
 """
 La vista se encarga de la interacción con el usuario
@@ -56,25 +57,30 @@ def requerimiento1(catalog,fecha_inicial, fecha_final):
     i=0
     j=lt.size(reque1)-3
     x=0
+    tabla = PrettyTable()
+    tabla.field_names = ["Nombre", "Nacimiento", "Fallecimiento", "Nacionalidad","Genero"]  
+    tabla._max_width={"Nombre":40,"Nacimiento":14,"Fallecimiento":14, "Nacionalidad":17, "Genero":17}  
     iterator1= it.newIterator(reque1)
     while it.hasNext(iterator1) and i < 3:
         elemento= it.next(iterator1)
-        print(" Nombre del artista: " + (elemento['DisplayName']) 
-        + " Año de Nacimiento: " + str(elemento['BeginDate']) + "\n Año de fallecimiento: " + str(elemento['EndDate']) 
-        + " Nacionalidad: " +str(elemento['Nationality']) + "\n Genero: " +str(elemento['Gender']))
+        datos = elemento['DisplayName'],elemento['BeginDate'],str(elemento['EndDate']),elemento['Nationality'],str(elemento['Gender'])
+        tabla.add_row(datos)
         i += 1
     iterator2= it.newIterator(reque1)
     while it.hasNext(iterator2) and x < lt.size(reque1):
         elemento=it.next(iterator2)
         if x >= j:
-            print(" Nombre del artista: " + str(elemento['DisplayName']) 
-            + " Año de Nacimiento: " + str(elemento['BeginDate']) + "\n Año de fallecimiento: " + str(elemento['EndDate']) 
-            + " Nacionalidad: " +str(elemento['Nationality']) + "\n Genero: " +str(elemento['Gender']))
+            datos = elemento['DisplayName'],elemento['BeginDate'],str(elemento['EndDate']),elemento['Nationality'],str(elemento['Gender'])
+            tabla.add_row(datos)
         x += 1
+    print(tabla)
 
 def requerimiento2(catalog,fecha_inicial, fecha_final):
     reque2= controller.requerimiento2(catalog,fecha_inicial, fecha_final) 
     print(lt.size(reque2))
+    tabla = PrettyTable()
+    tabla.field_names = ["Titulo", "Artista(s)", "Fecha", "Medio","Dimensiones"]  
+    tabla._max_width={"Titulo":25,"Artista(s)":20,"Fecha":17, "Medio":17, "Dimensiones":20}
     i=0
     j=lt.size(reque2)-3
     x=0
@@ -82,9 +88,8 @@ def requerimiento2(catalog,fecha_inicial, fecha_final):
     iterator1= it.newIterator(reque2)
     while it.hasNext(iterator1) and i < 3:
         elemento= it.next(iterator1)
-        print(" Titulo: " + (elemento['Title']) 
-        + " Arstista(s): " + obtenerArtistas(catalog, elemento['ConstituentID']) + "\n Fecha: " + str(elemento['Date']) 
-        + " Medio: " +str(elemento['Medium']) + "\n Dimensiones: " +str(elemento['Dimensions']))
+        datos = elemento['Title'],obtenerArtistas(catalog, elemento['ConstituentID']),str(elemento['Date']),str(elemento['Medium']),str(elemento['Dimensions'])
+        tabla.add_row(datos)
         i += 1
     iterator2= it.newIterator(reque2)
     while it.hasNext(iterator2) and x < lt.size(reque2):
@@ -92,63 +97,74 @@ def requerimiento2(catalog,fecha_inicial, fecha_final):
         if elemento['CreditLine'] == 'Purchase':
             comprados += 1
         if x >= j:
-            print(" Titulo: " + (elemento['Title']) 
-            + " Arstista(s): " + obtenerArtistas(catalog, elemento['ConstituentID']) + "\n Fecha: " + str(elemento['Date']) 
-            + " Medio: " +str(elemento['Medium']) + "\n Dimensiones: " +str(elemento['Dimensions']))
+            artista = obtenerArtistas(catalog, elemento['ConstituentID'])
+            datos = elemento['Title'],artista,str(elemento['Date']),str(elemento['Medium']),str(elemento['Dimensions'])
+            tabla.add_row(datos)
         x += 1
+    print(tabla)
     print('La cantidad de comprados es: ' + str(comprados))
 
 def requerimiento3(catalog,Artist):
     reque3= controller.requerimiento3(catalog, Artist)
     print('El Artista tiene: '+ str(lt.size(reque3[0]))+' Obras.')
     print('El Artista utiliza: '+ str(lt.size(reque3[1]))+' Tecnicas.')
+    tabla = PrettyTable()
+    tabla.field_names = ["Titulo", "Artista(s)", "Fecha", "Medio","Dimensiones"]  
+    tabla._max_width={"Titulo":25,"Artista(s)":20,"Fecha":17, "Medio":17, "Dimensiones":20}
     iterator1= it.newIterator(reque3[2])
     i=0
     j=lt.size(reque3[2])-3
     x=0
     while it.hasNext(iterator1) and i < 3:
         elemento= it.next(iterator1)
-        print(" Titulo: " + (elemento['Title']) 
-        + " Arstista(s): " + obtenerArtistas(catalog, elemento['ConstituentID']) + "\n Fecha: " + str(elemento['Date']) 
-        + " Medio: " +str(elemento['Medium']) + "\n Dimensiones: " +str(elemento['Dimensions']))
+        datos = elemento['Title'],obtenerArtistas(catalog, elemento['ConstituentID']),str(elemento['Date']),str(elemento['Medium']),str(elemento['Dimensions'])
+        tabla.add_row(datos)
         i += 1
     iterator2= it.newIterator(reque3[2])
     while it.hasNext(iterator2) and x < lt.size(reque3[2]):
         elemento=it.next(iterator2)
         if x >= j:
-            print(" Titulo: " + (elemento['Title']) 
-            + " Arstista(s): " + obtenerArtistas(catalog, elemento['ConstituentID']) + "\n Fecha: " + str(elemento['Date']) 
-            + " Medio: " +str(elemento['Medium']) + "\n Dimensiones: " +str(elemento['Dimensions']))
+            datos = elemento['Title'],obtenerArtistas(catalog, elemento['ConstituentID']),str(elemento['Date']),str(elemento['Medium']),str(elemento['Dimensions'])
+            tabla.add_row(datos)
         x += 1
+    print(tabla)
 
 def requerimiento4(catalog):
     reque4 = controller.requerimiento4(catalog)
+    tabla1 = PrettyTable()
+    tabla1.field_names = ["País", "# de obras"]  
     for i in range(1,10):
         elemento=lt.getElement(reque4,i)
         size = lt.size(elemento['value'])
         if elemento['key']=='':
-            print('El pais: artistas de nacionalidad desconocida con: ' + str(size))
+            datos='nacionalidad desconocida', str(size)
+            tabla1.add_row(datos)
         else:
-            print('El pais: ' + elemento['key'] + ' con: ' + str(size))
+            datos = elemento["key"],str(size)
+            tabla1.add_row(datos)
+    print(tabla1)
     peliculas= lt.getElement(reque4,1)['value']
     i=0
     j=lt.size(peliculas)-3
     x=0
     iterator1= it.newIterator(peliculas)
+    tabla2 = PrettyTable()
+    tabla2.field_names = ["Titulo", "Artista(s)","Fecha","Medio","Dimensiones"] 
+    tabla2._max_width={"Titulo":25,"Artista(s)":20,"Fecha":17, "Medio":17, "Dimensiones":15}
     while it.hasNext(iterator1) and i < 3:
         elemento= it.next(iterator1)
-        print(" Titulo: " + (elemento['Title']) 
-        + " Arstista(s): " + obtenerArtistas(catalog, elemento['ConstituentID']) + "\n Fecha: " + str(elemento['Date']) 
-        + " Medio: " +str(elemento['Medium']) + "\n Dimensiones: " +str(elemento['Dimensions']))
+        datos=elemento['Title'], obtenerArtistas(catalog, elemento['ConstituentID']),str(elemento['Date']), str(elemento['Medium']),str(elemento['Dimensions'])
+        tabla2.add_row(datos)
         i += 1
     iterator2= it.newIterator(peliculas)
     while it.hasNext(iterator2) and x < lt.size(peliculas):
         elemento=it.next(iterator2)
         if x >= j:
-            print(" Titulo: " + (elemento['Title']) 
-            + " Arstista(s): " + obtenerArtistas(catalog, elemento['ConstituentID']) + "\n Fecha: " + str(elemento['Date']) 
-            + " Medio: " +str(elemento['Medium']) + "\n Dimensiones: " +str(elemento['Dimensions']))
+            datos=elemento['Title'], obtenerArtistas(catalog, elemento['ConstituentID']),str(elemento['Date']), str(elemento['Medium']),str(elemento['Dimensions'])
+            tabla2.add_row(datos)
         x += 1
+    print(tabla2)
+
 
 def requerimiento5(catalog, Department):
     reque5= controller.requerimiento5(catalog, Department)

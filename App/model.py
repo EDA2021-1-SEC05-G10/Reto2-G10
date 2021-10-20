@@ -232,6 +232,7 @@ def requerimiento5(catalog, Department):
             k=lt.size(obrascostosas)
             while i <= j:
                 fechai= lt.getElement(obrasantiguas, i)['Date']
+                print(fechai)
                 
                 if elemento['Date'] < fechai:
                     viejo= lt.getElement(obrasantiguas, i)
@@ -251,7 +252,9 @@ def requerimiento5(catalog, Department):
                     lt.insertElement(obrascostosas,maspesado,h+1)
                     break
                 elif h == k:
-                    lt.insertElement(obrascostosas, elemento,h+1)
+                    lt.insertElement(obrascostosas, elemento,i+1)
+                
+
                 h+=1
         else:
             lt.addLast(obrasantiguas, elemento)
