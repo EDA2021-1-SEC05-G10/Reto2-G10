@@ -79,6 +79,9 @@ def requerimiento4(catalog):
 def requerimiento5(catalog, Department):
     return model.requerimiento5(catalog, Department)
 
+def requerimiento6(catalog, cant, fechaInicio, fechaFinal):
+    return model.requerimiento6(catalog, cant, fechaInicio, fechaFinal)
+
 def obtenerartista(catalog, llaves):
 
     return model.obteneratista(catalog, llaves)
@@ -86,6 +89,8 @@ def obtenerartista(catalog, llaves):
 def obtenerobras(catalog, llaves):
 
     return model.obtenerobras(catalog, llaves)
+
+
 
 
 

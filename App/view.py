@@ -47,11 +47,13 @@ def printMenu():
     print("4- Requerimiento 3")
     print("5- Requerimiento 4")
     print("6- Requerimiento 5")
+    print("7- Requerimiento 6")
     print("0- Salir")
 
 catalog = None
 
 def requerimiento1(catalog,fecha_inicial, fecha_final):
+    inicio = time.time()
     reque1= controller.requerimiento1(catalog,fecha_inicial, fecha_final) 
     print(lt.size(reque1))
     i=0
@@ -74,8 +76,11 @@ def requerimiento1(catalog,fecha_inicial, fecha_final):
             tabla.add_row(datos)
         x += 1
     print(tabla)
+    fin = time.time()
+    print(fin-inicio)
 
 def requerimiento2(catalog,fecha_inicial, fecha_final):
+    inicio = time.time()
     reque2= controller.requerimiento2(catalog,fecha_inicial, fecha_final) 
     print(lt.size(reque2))
     tabla = PrettyTable()
@@ -103,8 +108,11 @@ def requerimiento2(catalog,fecha_inicial, fecha_final):
         x += 1
     print(tabla)
     print('La cantidad de comprados es: ' + str(comprados))
+    fin = time.time()
+    print(fin-inicio)
 
 def requerimiento3(catalog,Artist):
+    inicio = time.time()
     reque3= controller.requerimiento3(catalog, Artist)
     print('El Artista tiene: '+ str(lt.size(reque3[0]))+' Obras.')
     print('El Artista utiliza: '+ str(lt.size(reque3[1]))+' Tecnicas.')
@@ -128,8 +136,11 @@ def requerimiento3(catalog,Artist):
             tabla.add_row(datos)
         x += 1
     print(tabla)
+    fin = time.time()
+    print(fin-inicio)
 
 def requerimiento4(catalog):
+    inicio = time.time()
     reque4 = controller.requerimiento4(catalog)
     tabla1 = PrettyTable()
     tabla1.field_names = ["País", "# de obras"]  
@@ -164,10 +175,16 @@ def requerimiento4(catalog):
             tabla2.add_row(datos)
         x += 1
     print(tabla2)
+    fin = time.time()
+    print(fin-inicio)
 
 
 def requerimiento5(catalog, Department):
+    inicio = time.time()
     reque5= controller.requerimiento5(catalog, Department)
+    tabla1 = PrettyTable()
+    tabla1.field_names = ["Titulo", "Artista(s)","Classification","Fecha","medio","Dimensiones","Valor"] 
+    tabla1._max_width={"Titulo":15,"Artista(s)":15,"Classification":17, "Fecha":15,"medio":15, "Dimensiones":15,"Valor":10}
     lista_antiguos= reque5[0]
     lista_costosos= reque5[1]
     valor=reque5[2]
@@ -176,29 +193,77 @@ def requerimiento5(catalog, Department):
     print('Total de obras para transportar es: '+str(total_obras))
     print('El valor total para transportar es: '+str(valor))
     print('El peso total para transportar es: '+str(peso))
-    for i in range(1,5):
+    for i in range(1,6):
         elemento= lt.getElement(lista_antiguos,i)
         valor2=0.00
-        if elemento['Weight (kg)'] == '':
+        if obtenermetraje(elemento) == 0:
             valor2= 48.00
         else:
-            valor2= float(elemento['Weight (kg)']) *72.00
-        print(" Titulo: " + (elemento['Title']) 
-            + " Arstista(s): " + obtenerArtistas(catalog, elemento['ConstituentID'])+" Clasificacion: "+str(elemento['Classification']) + "\n Fecha: " + str(elemento['Date']) 
-            + " Medio: " +str(elemento['Medium']) + "\n Dimensiones: " +str(elemento['Dimensions'])+ " Costo de Transporte: "+str(valor2)+ "\n") 
-    
-    for i in range(1,5):
+            valor2= obtenermetraje(elemento) *72.00
+            
+        x =((elemento['Title']),obtenerArtistas(catalog, elemento['ConstituentID']),str(elemento['Classification']),str(elemento['Date']), 
+            str(elemento['Medium']),str(elemento['Dimensions']),str(valor2)) 
+        tabla1.add_row(x)
+    tabla2 = PrettyTable()
+    tabla2.field_names = ["Titulo", "Artista(s)","Classification","Fecha","medio","Dimensiones","Valor"] 
+    tabla2._max_width={"Titulo":15,"Artista(s)":15,"Classification":17, "Fecha":15,"medio":15, "Dimensiones":15,"Valor":10}
+    for i in range(1,6):
         elemento= lt.getElement(lista_costosos,i)
         valor2=0.00
-        if elemento['Weight (kg)'] == '':
+        if obtenermetraje(elemento) == 0:
             valor2= 48.00
         else:
-            valor2= float(elemento['Weight (kg)']) *72.00
-        print(" Titulo: " + (elemento['Title']) 
-            + " Arstista(s): " + obtenerArtistas(catalog, elemento['ConstituentID'])+" Clasificacion: "+str(elemento['Classification']) + "\n Fecha: " + str(elemento['Date']) 
-            + " Medio: " +str(elemento['Medium']) + "\n Dimensiones: " +str(elemento['Dimensions'])+ " Costo de Transporte: "+str(valor2) + "\n")
+            valor2= obtenermetraje(elemento) *72.00
+        x =((elemento['Title']),obtenerArtistas(catalog, elemento['ConstituentID']),str(elemento['Classification']),str(elemento['Date']), 
+            str(elemento['Medium']),str(elemento['Dimensions']),str(valor2)) 
+        tabla2.add_row(x)
+    print(tabla2,tabla1)
+    fin = time.time()
+    print(fin-inicio)
+def obtenermetraje(elemento):
+    costoi= elemento['Dimensions']
+    whe=costoi.split('(')
+    if len(whe)>1:
+        weight=whe[len(whe)-1]
+        if len(weight.split(' '))>2:
+            med1=weight.split(' ')[0]
+            med2=weight.split(' ')[2]
+            casoe=med2.split('c')
+            if len(casoe)>1:
+                med2=casoe[0]
+            try:    
+                pesoAct= (float(med1)*float(med2))/10000
+            except:
+                pesoAct=0.0
+            return pesoAct
+        else:
+            return (float(weight.split(' ')[0])*1)/10000
+    else:
+        return 0
 
-
+def requerimiento6(catalog, cant, fechaInicio, fechaFinal):
+    inicio = time.time()
+    x,Artw = controller.requerimiento6(catalog, cant, fechaInicio, fechaFinal)  
+    tablaPro = PrettyTable()
+    tablaPro.field_names = ["id", "Nombre","Fecha nacimiento","Genero","Bio artista","Wiki QID","Cant obras"] 
+    tablaPro._max_width={"id":15,"Nombre":20,"Fecha nacimiento":17, "Genero":17, "Bio artista":18,"Wiki QID":18,"Cant obras":5}
+    tablaArtw = PrettyTable()
+    tablaArtw.field_names = ["ObjectID","Title","Medium","Date","DateAcquired","Department","Classification"]
+    tablaArtw._max_width={"ObjectID":15,"Title":15,"Medium":15, "Date":17, "DateAcquired":20,"Department":20,"Classification":20}
+    for cada in x:
+        tablaPro.add_row(cada)
+       
+    idx = 0
+    iterator1= it.newIterator(Artw)    
+    while idx <5 and it.hasNext(iterator1):
+        cada= it.next(iterator1)
+        datos = [cada["ObjectID"],cada["Title"],cada["Medium"],cada["Date"],cada["DateAcquired"],cada["Department"],cada["Classification"]]
+        tablaArtw.add_row(datos)
+        idx+=1
+    print(tablaPro.get_string(sortby="Cant obras",reversesort=True))
+    print(tablaArtw)
+    fin = time.time()
+    print(fin-inicio)
 
 def obtenerArtistas(catalog, idartists):
     idartist= idartists[1: len(idartists)-1]
@@ -242,7 +307,8 @@ while True:
         requerimiento4(catalog)
     elif int(inputs[0]) == 6:
         requerimiento5(catalog, input("Ingresar Departamento: "))
-    
+    elif int(inputs[0]) == 7:
+        requerimiento6(catalog, input("Ingresar cantidad de artistas: "),input("Ingresar la fecha de inicio: "),input("Ingresar la fecha final: ") )
 
     else:
         sys.exit(0)

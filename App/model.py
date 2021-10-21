@@ -141,7 +141,7 @@ def requerimiento1(catalog, fecha_inicial, fecha_final):
             while it.hasNext(iterator2):
                 element = it.next(iterator2)
                 lt.addLast(lista, element)
-        
+    lista = sortBegin(lista)
     
     return lista
 
@@ -231,47 +231,96 @@ def requerimiento5(catalog, Department):
             h=1
             k=lt.size(obrascostosas)
             while i <= j:
-                fechai= lt.getElement(obrasantiguas, i)['Date']
-                print(fechai)
-                
-                if elemento['Date'] < fechai:
-                    viejo= lt.getElement(obrasantiguas, i)
-                    lt.deleteElement(obrasantiguas, i)
-                    lt.insertElement(obrasantiguas, elemento, i)
-                    lt.insertElement(obrasantiguas,viejo,i+1)
-                    break
+                fechai= lt.getElement(obrasantiguas, i)
+                date=fechai['Date']
+                if date != '' and date != ' ' and date is not None and elemento['Date']!='' and elemento['Date']!= ' ' and elemento['Date'] is not None:
+                    if float(elemento['Date']) < float(date) :
+                        viejo= lt.getElement(obrasantiguas, i)
+                        lt.deleteElement(obrasantiguas, i)
+                        lt.insertElement(obrasantiguas, elemento, i)
+                        lt.insertElement(obrasantiguas,viejo,i+1)
+                        break
                 elif i == j:
                     lt.insertElement(obrasantiguas, elemento,i+1)
                 i+=1
             while  h <= k:
-                costoi= lt.getElement(obrascostosas, h)['Weight (kg)']
-                if elemento['Weight (kg)'] > costoi:
-                    maspesado= lt.getElement(obrascostosas, h)
-                    lt.deleteElement(obrascostosas, h)
-                    lt.insertElement(obrascostosas, elemento, h)
-                    lt.insertElement(obrascostosas,maspesado,h+1)
-                    break
+                pesoAct=obtenermetraje(lt.getElement(obrascostosas, h))
+                pesoNue=obtenermetraje(elemento)
+                if pesoAct is not None:
+                    if pesoNue > pesoAct :
+                        maspesado= lt.getElement(obrascostosas, h)
+                        lt.deleteElement(obrascostosas, h)
+                        lt.insertElement(obrascostosas, elemento, h)
+                        lt.insertElement(obrascostosas,maspesado,h+1)
+                        break
                 elif h == k:
-                    lt.insertElement(obrascostosas, elemento,i+1)
-                
+                    lt.insertElement(obrascostosas, elemento,h+1)
 
                 h+=1
         else:
             lt.addLast(obrasantiguas, elemento)
             lt.addLast(obrascostosas, elemento)
 
-        if elemento['Weight (kg)'] == '':
+        if obtenermetraje == 0:
             valor += 48.00
-            peso += 0.20
         else:
-            peso2= float(elemento['Weight (kg)'])
-            valor2= peso2 * 72.00
+            try:
+                peso2= float(elemento['Weight (kg)'])
+            except:
+                peso2=0
+            pes=obtenermetraje(elemento)
+            valor2= pes * 72.00
             valor += valor2
             peso += peso2
 
+
     return [obrasantiguas, obrascostosas, valor, peso, lt.size(obras)]
 
-
+def requerimiento6(catalog,cant,fechaInicio,fechaFinal):
+    mpArt = catalog['artists']
+    cantObras = mp.newMap(numelements=30,maptype="PROBING",loadfactor=0.7)
+    ids = lt.newList()
+    autores = lt.newList()
+    x = mp.newMap(numelements=100,maptype="PROBING",loadfactor=0.7)
+    for a in lt.iterator(mp.valueSet(mpArt)):
+        if a["BeginDate"]>=fechaInicio and a["BeginDate"]<=fechaFinal:
+            lt.addLast(ids,a["ConstituentID"])
+            lt.addLast(autores,a)
+    for cada in lt.iterator(ids):
+        if mp.get(catalog["artworks"],cada) is not None:
+            mp.put(x,lt.size(me.getValue(mp.get(catalog["artworks"],cada))),cada)
+            
+            mp.put(cantObras,lt.size(me.getValue(mp.get(catalog["artworks"],cada))),cada)
+    
+    lis = lt.newList(datastructure="SINGLE_LINKED")
+    posi = 1
+    while int(lt.size(lis))< int(cant):
+        mayor = 1
+        igual = 0
+        for a in lt.iterator(mp.keySet(cantObras)):
+            if int(a) > mayor:
+                mayor = int(a)
+        lt.insertElement(lis,mp.get(catalog["artworks"],me.getValue(mp.get(x,mayor))),posi)
+        mp.remove(cantObras,mayor)
+        posi+=1
+    id = lt.firstElement(me.getValue(lt.firstElement(lis)))["ConstituentID"]
+    id = id.replace("[","")
+    id = id.replace("]","") 
+    if mp.get(catalog["artworks"],id) is not None:
+        Art = me.getValue(mp.get(catalog["artworks"],id))
+        Art = sortAdq(Art)
+    x=[]
+    iterator1= it.newIterator(autores)
+    while it.hasNext(iterator1):
+        au= it.next(iterator1)       
+        id = au["ConstituentID"]
+        id = id.replace("[","")
+        id = id.replace("]","") 
+        if mp.get(catalog["artworks"],id) is not None:
+            datos = [au["ConstituentID"],au["DisplayName"],au["BeginDate"],au["Gender"],au["ArtistBio"],au["Wiki QID"],lt.size(me.getValue(mp.get(catalog["artworks"],id)))]
+            x.append(datos)
+        
+    return x,Art
     
 
 def obteneratista(catalog, idartists):
@@ -284,10 +333,32 @@ def obtenerobras(catalog, idobras):
     if info is not None:
         return info['value']
 
-
+def obtenermetraje(elemento):
+    costoi= elemento['Dimensions']
+    whe=costoi.split('(')
+    if len(whe)>1:
+        weight=whe[len(whe)-1]
+        if len(weight.split(' '))>2:
+            med1=weight.split(' ')[0]
+            med2=weight.split(' ')[2]
+            casoe=med2.split('c')
+            if len(casoe)>1:
+                med2=casoe[0]
+            try:    
+                pesoAct= (float(med1)*float(med2))/10000
+            except:
+                pesoAct=0.0
+            return pesoAct
+        else:
+            return (float(weight.split(' ')[0])*1)/10000
+    else:
+        return 0
 
 # Funciones utilizadas para comparar elementos dentro de una lista
-
+def compararAdq(fecha1,fecha2):
+    return (fecha1['DateAcquired'] < fecha2['DateAcquired'])
+def compareBegin(autor1,autor2):
+    return (autor1['BeginDate'] < autor2['BeginDate'])
 # Funciones de ordenamiento
 def comparar(Fecha1, Fecha2 ):
     if Fecha1 < (Fecha2['key']):
@@ -296,4 +367,10 @@ def comparar(Fecha1, Fecha2 ):
         return 1
     else:
         return 0
+def sortAdq(catalog):
+    sorted_list = sa.sort(catalog, compararAdq)
+    return sorted_list
+def sortBegin(catalog):
+    sorted_list = sa.sort(catalog, compareBegin)
+    return sorted_list
 
